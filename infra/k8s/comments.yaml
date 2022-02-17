@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: comments-deployment
+    labels:
+        name: comments-deployment
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            component: comments
+    template:
+        metadata:
+            labels:
+                component: comments
+        spec:
+            containers:
+                - image: saarthak08/blog-comments
+                  name: comments
+                  resources:
+                      requests:
+                          cpu: "20m"
+                          memory: "55M"
+                      limits:
+                          cpu: "40m"
+                          memory: "100M"
+                  ports:
+                      - containerPort: 4001
+
+---
+# CLUSTER-IP-SERVICE
+apiVersion: v1
+kind: Service
+metadata:
+    name: comments-cluster-ip-service
+spec:
+    type: ClusterIP
+    selector:
+        component: comments
+    ports:
+        - port: 4001
+          targetPort: 4001

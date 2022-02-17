@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: moderation-deployment
+    labels:
+        name: moderation-deployment
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            component: moderation
+    template:
+        metadata:
+            labels:
+                component: moderation
+        spec:
+            containers:
+                - image: saarthak08/blog-moderation
+                  name: moderation
+                  resources:
+                      requests:
+                          cpu: "20m"
+                          memory: "55M"
+                      limits:
+                          cpu: "40m"
+                          memory: "100M"
+                  ports:
+                      - containerPort: 4003
+
+---
+# CLUSTER-IP-SERVICE
+apiVersion: v1
+kind: Service
+metadata:
+    name: moderation-cluster-ip-service
+spec:
+    type: ClusterIP
+    selector:
+        component: moderation
+    ports:
+        - port: 4003
+          targetPort: 4003

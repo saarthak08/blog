@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: posts-deployment
+    labels:
+        name: posts-deployment
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            component: posts
+    template:
+        metadata:
+            labels:
+                component: posts
+        spec:
+            containers:
+                - image: saarthak08/blog-posts
+                  name: posts
+                  resources:
+                      requests:
+                          cpu: "20m"
+                          memory: "55M"
+                      limits:
+                          cpu: "40m"
+                          memory: "100M"
+                  ports:
+                      - containerPort: 4000
+
+---
+# CLUSTER-IP-SERVICE
+apiVersion: v1
+kind: Service
+metadata:
+    name: posts-cluster-ip-service
+spec:
+    type: ClusterIP
+    selector:
+        component: posts
+    ports:
+        - port: 4000
+          targetPort: 4000

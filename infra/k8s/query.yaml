@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: query-deployment
+    labels:
+        name: query-deployment
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            component: query
+    template:
+        metadata:
+            labels:
+                component: query
+        spec:
+            containers:
+                - image: saarthak08/blog-query
+                  name: query
+                  resources:
+                      requests:
+                          cpu: "20m"
+                          memory: "55M"
+                      limits:
+                          cpu: "40m"
+                          memory: "100M"
+                  ports:
+                      - containerPort: 4002
+
+---
+# CLUSTER-IP-SERVICE
+apiVersion: v1
+kind: Service
+metadata:
+    name: query-cluster-ip-service
+spec:
+    type: ClusterIP
+    selector:
+        component: query
+    ports:
+        - port: 4002
+          targetPort: 4002

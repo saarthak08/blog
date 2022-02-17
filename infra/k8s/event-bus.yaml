@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: eventbus-deployment
+    labels:
+        name: eventbus-deployment
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            component: eventbus
+    template:
+        metadata:
+            labels:
+                component: eventbus
+        spec:
+            containers:
+                - image: saarthak08/blog-eventbus
+                  name: eventbus
+                  resources:
+                      requests:
+                          cpu: "20m"
+                          memory: "55M"
+                      limits:
+                          cpu: "40m"
+                          memory: "100M"
+                  ports:
+                      - containerPort: 4005
+
+---
+# CLUSTER-IP-SERVICE
+apiVersion: v1
+kind: Service
+metadata:
+    name: eventbus-cluster-ip-service
+spec:
+    type: ClusterIP
+    selector:
+        component: eventbus
+    ports:
+        - port: 4005
+          targetPort: 4005
